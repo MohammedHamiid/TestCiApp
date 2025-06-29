@@ -5,21 +5,20 @@ platform :ios do
   lane :beta do
     puts "🔐 Using local AuthKey.p8 file"
 
-    # 1. إنشاء مجلد fastlane لو مش موجود
-    require 'fileutils'
+    # إنشاء مجلد fastlane لو مش موجود
     FileUtils.mkdir_p("fastlane")
 
-    # 2. كتابة المفتاح داخل ملف AuthKey.p8
+    # كتابة المفتاح داخل ملف AuthKey.p8 من ENV
     File.write("fastlane/AuthKey.p8", ENV["APP_STORE_CONNECT_API_KEY"])
 
-    # 3. إعداد Apple API Key
+    # إعداد Apple API Key
     api_key = app_store_connect_api_key(
       key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
       issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
       key_filepath: "fastlane/AuthKey.p8"
     )
 
-    # 4. تحميل الشهادات من Match
+    # تحميل الشهادات من Match
     match(
       type: "adhoc",
       api_key: api_key,
@@ -28,12 +27,10 @@ platform :ios do
       readonly: false
     )
 
-    # 5. بناء التطبيق
-    build_app(
-      scheme: "TestCiApp"
-    )
+    # بناء التطبيق
+    build_app(scheme: "TestCiApp")
 
-    # 6. رفع .ipa على TestApp.io
+    # رفع .ipa على TestApp.io
     upload_to_testappio(
       api_token: "0db11f3c-d0d7-4b1c-8c76-8197063b74a5"
     )

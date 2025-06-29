@@ -2,17 +2,20 @@ platform :ios do
   desc "Build and upload to TestApp.io"
   lane :beta do
 
-api_key = app_store_connect_api_key(
-  key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
-  issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
-  key_filepath: ENV["APP_STORE_CONNECT_API_KEY"]
-)
+  api_key = app_store_connect_api_key(
+    key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+    issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
+    key_filepath: ENV["APP_STORE_CONNECT_API_KEY"]
+  )
 
-match(
-  type: "adhoc",
-  git_url: "https://github.com/MohammedHamiid/ios-certificates.git",
-  api_key: api_key
-)
+  match(
+    type: "adhoc",
+    api_key: api_key,
+    git_url: "https://github.com/MohammedHamiid/ios-certificates.git",
+    app_identifier: "com.benhamid.TestCiApp",
+    readonly: false
+  )
+
 
 
     build_app(

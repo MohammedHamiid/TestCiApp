@@ -1,16 +1,22 @@
 platform :ios do
   desc "Build and upload to TestApp.io"
   lane :beta do
-    puts "🔐 Using local AuthKey.p8 file"
+    puts "🔐 Creating fastlane/AuthKey.p8 from Jenkins secret..."
 
+    # ✅ أنشئ مجلد fastlane لو مش موجود
+    sh("mkdir -p fastlane")
+
+    # ✅ اكتب محتوى ملف الـ .p8 اللي جاي من Jenkins
     File.write("fastlane/AuthKey.p8", ENV["APP_STORE_CONNECT_API_KEY"])
 
+    # ✅ استعمل المفتاح
     api_key = app_store_connect_api_key(
       key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
       issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
       key_filepath: "fastlane/AuthKey.p8"
     )
 
+    # ✅ باقي الخطوات
     match(
       type: "adhoc",
       api_key: api_key,

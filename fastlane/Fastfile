@@ -1,39 +1,38 @@
 default_platform(:ios)
 
 platform :ios do
-  desc "Build and upload to TestApp.io"
+  desc "Push to TestApp.io"
   lane :beta do
     puts "🔐 Using local AuthKey.p8 file"
 
-    # اكتب الملف AuthKey.p8 من الـ Secret
+    # 1. إنشاء مجلد fastlane لو مش موجود
+    FileUtils.mkdir_p("fastlane")
+
+    # 2. كتابة المفتاح داخل ملف AuthKey.p8
     File.write("fastlane/AuthKey.p8", ENV["APP_STORE_CONNECT_API_KEY"])
 
-    # إنشاء API Key من المتغيرات البيئية
+    # 3. إعداد Apple API Key
     api_key = app_store_connect_api_key(
       key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
       issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
       key_filepath: "fastlane/AuthKey.p8"
     )
 
-    # تحميل الشهادات والبروفايلات باستخدام match
+    # 4. تحميل الشهادات من Match
     match(
       type: "adhoc",
       api_key: api_key,
       git_url: "https://github.com/MohammedHamiid/ios-certificates.git",
-      app_identifier: ["com.benhamid.TestCiApp"]
+      app_identifier: ["com.benhamid.TestCiApp"],
+      readonly: false
     )
 
-    # بناء التطبيق
-    build_app(
-      scheme: "TestCiApp",
-      export_method: "ad-hoc",
-      output_directory: "build"
-    )
+    # 5. بناء التطبيق
+    build_app(scheme: "TestCiApp")
 
-    # رفع التطبيق إلى TestApp.io
+    # 6. رفع .ipa على TestApp.io
     upload_to_testappio(
-      api_token: "0db11f3c-d0d7-4b1c-8c76-8197063b74a5", # ← ده اللي إدتهولي
-      ipa: "build/TestCiApp.ipa"
+      api_token: "0db11f3c-d0d7-4b1c-8c76-8197063b74a5"
     )
   end
 end

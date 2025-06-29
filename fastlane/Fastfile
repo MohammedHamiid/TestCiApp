@@ -6,6 +6,7 @@ platform :ios do
     puts "🔐 Using local AuthKey.p8 file"
 
     # 1. إنشاء مجلد fastlane لو مش موجود
+    require 'fileutils'
     FileUtils.mkdir_p("fastlane")
 
     # 2. كتابة المفتاح داخل ملف AuthKey.p8
@@ -28,7 +29,9 @@ platform :ios do
     )
 
     # 5. بناء التطبيق
-    build_app(scheme: "TestCiApp")
+    build_app(
+      scheme: "TestCiApp"
+    )
 
     # 6. رفع .ipa على TestApp.io
     upload_to_testappio(

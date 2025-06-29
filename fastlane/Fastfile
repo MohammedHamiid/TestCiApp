@@ -1,15 +1,10 @@
-require 'fileutils'
-
 platform :ios do
   desc "Build and upload to TestApp.io"
   lane :beta do
+    puts "🔐 Using local .p8 file"
 
-    puts "🔐 API KEY FILE PATH: #{ENV["APP_STORE_CONNECT_API_KEY"]}"
-    puts "🔐 API KEY ID: #{ENV["APP_STORE_CONNECT_API_KEY_ID"]}"
-    puts "🔐 ISSUER ID: #{ENV["APP_STORE_CONNECT_ISSUER_ID"]}"
-
-    api_key_temp_path =  "fastlane/AuthKey.p8"
-    FileUtils.cp(ENV["APP_STORE_CONNECT_API_KEY"], api_key_temp_path)
+    api_key_temp_path = "/tmp/AuthKey.p8"
+    FileUtils.cp(File.expand_path("~/Downloads/ApiKey_0RO18MG2FWE7.p8"), api_key_temp_path)
 
     api_key = app_store_connect_api_key(
       key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],

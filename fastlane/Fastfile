@@ -1,0 +1,16 @@
+platform :ios do
+  desc "Build and upload to TestApp.io"
+  lane :beta do
+    match(type: "adhoc")
+
+    build_app(
+      scheme: "TestCiApp",
+      export_method: "ad-hoc"
+    )
+
+    upload_to_testappio(
+      api_token: "0db11f3c-d0d7-4b1c-8c76-8197063b74a5",
+      app_id: "9QorGVmE7M"
+    )
+  end
+end

@@ -4,15 +4,20 @@ platform :ios do
   desc "Build and upload app to TestApp.io"
   lane :beta do
 
-    # بناء التطبيق (من غير توقيع يدوي - تأكد إن المشروع مهيأ للتوقيع التلقائي)
+    # بناء التطبيق باستخدام ملف التوقيع اللي أنشأه match
     build_app(
       scheme: "TestCiApp",
-      export_method: "ad-hoc" # أو "development" لو بتجرب بس
+      export_method: "ad-hoc", # أو "development" لو بتجرب بس
+      export_options: {
+        provisioningProfiles: {
+          "com.benhamid.TestCiApp" => "match AdHoc com.benhamid.TestCiApp"
+        }
+      }
     )
 
     # رفع التطبيق على TestApp.io
     upload_to_testappio(
-      api_token: ENV["TESTAPPIO_API_TOKEN"],
+      api_token: ENV["TESTAPPIO_API_TOKEN"], # تأكد إن المتغير موجود في Jenkins أو .env
       app_id: "9QorGVmE7M"
     )
   end

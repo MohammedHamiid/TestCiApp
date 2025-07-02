@@ -10,13 +10,16 @@ platform :ios do
       in_house: false
     )
 
+    # نستخدم المتغير api_key لإنشاء جلسة الـ API وليس تمريره مباشرة إلى build_app
+    ENV["APP_STORE_CONNECT_API_KEY"] = api_key
+
     build_app(
       scheme: ENV["APP_SCHEME"],
       export_method: "app-store",
       clean: true,
       output_directory: "./build",
-      output_name: "#{ENV['APP_SCHEME']}.ipa",
-      api_key: api_key
+      output_name: "#{ENV['APP_SCHEME']}.ipa"
+      # لا تمرر api_key هنا
     )
 
     upload_to_testappio(

@@ -1,18 +1,31 @@
-default_platform(:ios)
+name: iOS Build & Upload (with match)
 
-platform :ios do
-  desc "Build and upload app to TestApp.io without match"
-  lane :beta do
+on:
+  push:
+    branches: [main]
 
-    build_app(
-      scheme: "TestCiApp",
-      export_method: "development", # لازم يكون development مش ad-hoc
-      xcargs: "-allowProvisioningUpdates", # يسمح لـ Xcode ينشئ provisioning profile تلقائيًا
-    )
+jobs:
+  build:
+    runs-on: macos-latest
 
-    upload_to_testappio(
-      api_token: ENV["TESTAPPIO_API_TOKEN"],
-      app_id: "9QorGVmE7M"
-    )
-  end
-end
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+
+      - name: Install dependencies
+        run: |
+          gem install bundler -v 2.6.9
+          bundle _2.6.9_ install
+
+      - name: Run Fastlane lane
+        run: bundle _2.6.9_ exec fastlane ios beta
+        env:
+          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+          TESTAPPIO_API_TOKEN: ${{ secrets.TESTAPPIO_API_TOKEN }}
+          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}

@@ -1,25 +1,22 @@
-lane :beta do
-  match(
-    type: "appstore",
-    git_url: ENV["MATCH_GIT_URL"],
-    git_branch: "main",
-    git_basic_authorization: ENV["MATCH_GIT_PRIVATE_TOKEN"]
-  )
+default_platform(:ios)
 
-  build_app(
-    scheme: ENV["APP_SCHEME"],
-    export_method: "app-store",
-    clean: true,
-    output_directory: "./build",
-    output_name: "#{ENV['APP_SCHEME']}.ipa"
-  )
+platform :ios do
+  desc "Build and upload to TestApp.io"
+  lane :beta do
+    match(
+      type: "appstore",
+      git_url: ENV["MATCH_GIT_URL"]
+    )
 
-  upload_to_testappio(
-    api_token: ENV["TESTAPPIO_API_TOKEN"],
-    app_id: ENV["TESTAPPIO_APP_ID"],
-    ipa: "./build/#{ENV['APP_SCHEME']}.ipa"
-  )
+    build_app(
+      scheme: ENV["APP_SCHEME"],
+      export_method: "app-store"
+    )
+
+    upload_to_testappio(
+      api_token: ENV["TESTAPPIO_API_TOKEN"],
+      app_id: ENV["TESTAPPIO_APP_ID"],
+      ipa: lane_context[SharedValues::IPA_OUTPUT_PATH]
+    )
+  end
 end
-
-end
-

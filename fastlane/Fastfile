@@ -7,7 +7,6 @@ platform :ios do
   type: "appstore",
   git_url: ENV["MATCH_GIT_URL"],
   git_branch: "master",
-  clone_branch_directly: true,
   git_basic_authorization: ENV["MATCH_GIT_PRIVATE_TOKEN"]
 )
 

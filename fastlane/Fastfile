@@ -3,23 +3,12 @@ default_platform(:ios)
 platform :ios do
   desc "Build and upload to TestApp.io"
   lane :beta do
-    api_key = app_store_connect_api_key(
-      key_id: ENV["APP_STORE_KEY_ID"],
-      issuer_id: ENV["APP_STORE_ISSUER_ID"],
-      key_filepath: ENV["APP_STORE_AUTH_KEY_PATH"],
-      in_house: false
-    )
-
-    # نستخدم المتغير api_key لإنشاء جلسة الـ API وليس تمريره مباشرة إلى build_app
-    ENV["APP_STORE_CONNECT_API_KEY"] = api_key
-
     build_app(
       scheme: ENV["APP_SCHEME"],
       export_method: "app-store",
       clean: true,
       output_directory: "./build",
       output_name: "#{ENV['APP_SCHEME']}.ipa"
-      # لا تمرر api_key هنا
     )
 
     upload_to_testappio(
@@ -29,3 +18,4 @@ platform :ios do
     )
   end
 end
+

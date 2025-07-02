@@ -1,31 +1,22 @@
-name: iOS Build & Upload (with match)
+default_platform(:ios)
 
-on:
-  push:
-    branches: [main]
+platform :ios do
+  desc "Build and upload app to TestApp.io"
+  lane :beta do
+    match(
+      type: "adhoc",
+      readonly: false
+    )
 
-jobs:
-  build:
-    runs-on: macos-latest
+    build_app(
+      scheme: "TestCiApp",
+      export_method: "adhoc"
+    )
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    upload_to_testappio(
+      api_token: ENV["TESTAPPIO_API_TOKEN"],
+      app_id: "9QorGVmE7M"
+    )
+  end
+end
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.2'
-
-      - name: Install dependencies
-        run: |
-          gem install bundler -v 2.6.9
-          bundle _2.6.9_ install
-
-      - name: Run Fastlane lane
-        run: bundle _2.6.9_ exec fastlane ios beta
-        env:
-          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
-          TESTAPPIO_API_TOKEN: ${{ secrets.TESTAPPIO_API_TOKEN }}
-          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
-          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}

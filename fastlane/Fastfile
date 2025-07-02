@@ -1,17 +1,13 @@
 default_platform(:ios)
 
 platform :ios do
-  desc "Build and upload app to TestApp.io"
+  desc "Build and upload app to TestApp.io without match"
   lane :beta do
-    match(
-      type: "adhoc", # أو "development" حسب نوع التوقيع اللي خزّنته في repo
-      readonly: false,
-      git_url: ENV["MATCH_GIT_URL"]
-    )
 
     build_app(
       scheme: "TestCiApp",
-      export_method: "ad-hoc"
+      export_method: "development", # لازم يكون development مش ad-hoc
+      xcargs: "-allowProvisioningUpdates", # يسمح لـ Xcode ينشئ provisioning profile تلقائيًا
     )
 
     upload_to_testappio(

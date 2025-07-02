@@ -1,45 +1,28 @@
-name: Build and Upload iOS App to TestApp.io
+name: Build and Upload to TestApp.io
 
 on:
   push:
     branches:
-      - main # أو أي فرع انت بتستخدمه للنشر
+      - main
 
 jobs:
-  build:
+  build_and_upload:
     runs-on: macos-latest
+    env:
+      TESTAPPIO_API_TOKEN: ${{ secrets.TESTAPPIO_API_TOKEN }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Ruby
+      - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2'
+          ruby-version: 3.1
 
-      - name: Cache RubyGems
-        uses: actions/cache@v3
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
+      - name: Install fastlane
+        run: gem install fastlane
 
-      - name: Install dependencies
-        run: |
-          gem install bundler -v 2.6.9
-          bundle _2.6.9_ config set --local path 'vendor/bundle'
-          bundle _2.6.9_ install --jobs 4 --retry 3
+      - name: Build and upload to TestApp.io
+        run: fastlane ios upload_testappio
 
-      - name: Configure Git credentials for match
-        run: git config --global url."https://${{ secrets.MATCH_GIT_PRIVATE_TOKEN }}@github.com/".insteadOf "https://github.com/"
-
-      - name: Run Fastlane lane (beta)
-        env:
-          TESTAPPIO_API_TOKEN: ${{ secrets.TESTAPPIO_API_TOKEN }}
-          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          MATCH_GIT_PRIVATE_TOKEN: ${{ secrets.MATCH_GIT_PRIVATE_TOKEN }}
-          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
-        run: bundle _2.6.9_ exec fastlane ios beta

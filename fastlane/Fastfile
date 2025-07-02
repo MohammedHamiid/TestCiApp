@@ -1,16 +1,33 @@
 default_platform(:ios)
 
 platform :ios do
+  api_key = app_store_connect_api_key(
+    key_id: "38X4TY69H6",
+    issuer_id: "69a6de72-c3d9-47e3-e053-5b8c7c11a4d1",
+    key_filepath: "./fastlane/AuthKey_38X4TY69H6.p8",
+    in_house: false
+  )
+
   desc "Build and upload the app to TestApp.io"
   lane :beta do
-    build_app(
-      scheme: "TestCiApp",          # غيّر الاسم حسب مشروعك
-      export_method: "ad-hoc",      # أو app-store حسب توقيعك
-      output_directory: "./build",  # مجلد حفظ الـ ipa
-      output_name: "TestCiApp.ipa"  # اسم ملف الـ ipa
+    match(
+      type: "adhoc",
+      readonly: true,
+      app_identifier: "com.benhamid.TestCiApp",
+      api_key: api_key
     )
+
+    build_app(
+      scheme: "TestCiApp",
+      export_method: "ad-hoc",
+      output_directory: "./build",
+      output_name: "TestCiApp.ipa",
+      api_key: api_key,
+      allow_provisioning_updates: true
+    )
+
     upload_to_testappio(
-      token: ENV['TESTAPPIO_API_TOKEN'],  # اسم المتغير متوافق مع secret في GitHub
+      token: ENV['TESTAPPIO_API_TOKEN'],
       file: "./build/TestCiApp.ipa"
     )
   end

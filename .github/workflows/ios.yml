@@ -26,6 +26,7 @@ jobs:
         run: bundle _2.6.9_ exec fastlane ios beta
         env:
           MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+          MATCH_GIT_PRIVATE_TOKEN: ${{ secrets.MATCH_GIT_PRIVATE_TOKEN }}
           TESTAPPIO_API_TOKEN: ${{ secrets.TESTAPPIO_API_TOKEN }}
           FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
           FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}

@@ -1,4 +1,4 @@
-name: iOS Build and Upload to TestApp.io
+name: Build and Upload to TestApp.io
 
 on:
   push:
@@ -7,10 +7,10 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-14
 
     steps:
-      - name: Checkout repo
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up Ruby
@@ -18,24 +18,24 @@ jobs:
         with:
           ruby-version: 3.2
 
-      - name: Install dependencies and update fastlane
-        run: |
-          gem install bundler
-          bundle install
-          gem install fastlane --no-document
+      - name: Install Bundler
+        run: gem install bundler
 
-      - name: Decode and write Apple AuthKey
-        run: |
-          echo "${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}" | base64 --decode > AuthKey.p8
+      - name: Install dependencies
+        run: bundle install
 
-      - name: Run fastlane beta lane
+      - name: Setup match credentials
         env:
-          APP_STORE_KEY_ID: ${{ secrets.APP_STORE_KEY_ID }}
-          APP_STORE_ISSUER_ID: ${{ secrets.APP_STORE_ISSUER_ID }}
-          APP_STORE_AUTH_KEY_PATH: ./AuthKey.p8
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+        run: echo "Match credentials set"
+
+      - name: Run Fastlane beta
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+          APP_SCHEME: ${{ secrets.APP_SCHEME }}
           TESTAPPIO_API_TOKEN: ${{ secrets.TESTAPPIO_API_TOKEN }}
           TESTAPPIO_APP_ID: ${{ secrets.TESTAPPIO_APP_ID }}
-          APP_SCHEME: TestCiApp
-        run: |
-          bundle exec fastlane beta
+        run: bundle exec fastlane beta
 

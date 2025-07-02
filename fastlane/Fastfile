@@ -3,22 +3,23 @@ default_platform(:ios)
 platform :ios do
   desc "Build and upload app to TestApp.io"
   lane :beta do
-
     match(
       type: "adhoc",
-      readonly: false,
-      git_url: ENV["MATCH_GIT_URL"],
-      git_basic_authorization: ENV["MATCH_GIT_PRIVATE_TOKEN"]
+      readonly: false
     )
 
     build_app(
       scheme: "TestCiApp",
-      export_method: "ad-hoc"
+      export_method: "adhoc", # أو "development" لو كنت تستخدمه
+      export_options: {
+        provisioningProfiles: {
+          "com.benhamid.TestCiApp" => "match AdHoc com.benhamid.TestCiApp"
+        }
+      }
     )
 
     upload_to_testappio(
-      api_token: ENV["TESTAPPIO_API_TOKEN"],
-      app_id: "9QorGVmE7M"
+      api_token: ENV["TESTAPPIO_API_TOKEN"]
     )
   end
 end

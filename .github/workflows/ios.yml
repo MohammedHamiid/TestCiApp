@@ -1,8 +1,9 @@
-name: iOS Build & Upload (with match)
+name: iOS Build and Upload to TestApp.io
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   build:
@@ -17,16 +18,24 @@ jobs:
         with:
           ruby-version: '3.2'
 
+      - name: Cache RubyGems
+        uses: actions/cache@v3
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+
       - name: Install dependencies
         run: |
           gem install bundler -v 2.6.9
           bundle _2.6.9_ install
 
-      - name: Run Fastlane lane
+      - name: Run Fastlane lane (beta)
         run: bundle _2.6.9_ exec fastlane ios beta
         env:
+          TESTAPPIO_API_TOKEN: ${{ secrets.TESTAPPIO_API_TOKEN }}
           MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
           MATCH_GIT_PRIVATE_TOKEN: ${{ secrets.MATCH_GIT_PRIVATE_TOKEN }}
-          TESTAPPIO_API_TOKEN: ${{ secrets.TESTAPPIO_API_TOKEN }}
-          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
           FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
+

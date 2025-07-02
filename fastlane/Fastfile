@@ -5,18 +5,17 @@ platform :ios do
   lane :beta do
     match(
       type: "appstore",
-      git_url: ENV["MATCH_GIT_URL"]
+      git_url: "https://github.com/MohammedHamiid/ios-certificates.git",
+      readonly: false
     )
-
     build_app(
-      scheme: ENV["APP_SCHEME"],
+      scheme: "TestCiApp",
       export_method: "app-store"
     )
-
     upload_to_testappio(
       api_token: ENV["TESTAPPIO_API_TOKEN"],
       app_id: ENV["TESTAPPIO_APP_ID"],
-      ipa: lane_context[SharedValues::IPA_OUTPUT_PATH]
+      ipa: "./build/TestCiApp.ipa"
     )
   end
 end

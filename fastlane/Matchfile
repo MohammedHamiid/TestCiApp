@@ -1,5 +1,0 @@
-git_url("https://github.com/MohammedHamiid/ios-certificates.git")
-git_branch("main") # غيّر حسب الفرع الرئيسي في الريبو
-type("adhoc")
-app_identifier("com.benhamid.TestCiApp")
-username("m.hamid@lamsaworld.com")

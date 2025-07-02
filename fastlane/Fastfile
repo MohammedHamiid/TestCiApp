@@ -1,30 +1,17 @@
 default_platform(:ios)
 
 platform :ios do
-  desc "Build and upload app to TestApp.io"
+  desc "Build and upload the app to TestApp.io"
   lane :beta do
-    # ✅ Fetch signing certificates and provisioning profiles
-    match(
-      type: "adhoc",
-      readonly: false,
-      app_identifier: "com.benhamid.TestCiApp"
-    )
-
-    # ✅ Build the app
     build_app(
-      scheme: "TestCiApp",             # ✅ تأكد إن الـ scheme ده موجود في Xcode
-      export_method: "ad-hoc",         # ✅ الصيغة الصحيحة هي "ad-hoc" مش "adhoc"
-      export_options: {
-        provisioningProfiles: {
-          "com.benhamid.TestCiApp" => "match AdHoc com.benhamid.TestCiApp"
-        }
-      }
+      scheme: "TestCiApp",          # غيّر الاسم حسب مشروعك
+      export_method: "ad-hoc",      # أو app-store حسب توقيعك
+      output_directory: "./build",  # مجلد حفظ الـ ipa
+      output_name: "TestCiApp.ipa"  # اسم ملف الـ ipa
     )
-
-    # ✅ Upload to TestApp.io
     upload_to_testappio(
-      api_token: ENV["TESTAPPIO_API_TOKEN"],
-      release_notes: "Uploaded from GitHub Actions 🚀"
+      token: ENV['TESTAPPIO_API_TOKEN'],  # اسم المتغير متوافق مع secret في GitHub
+      file: "./build/TestCiApp.ipa"
     )
   end
 end

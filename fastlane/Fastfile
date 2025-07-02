@@ -24,7 +24,6 @@ platform :ios do
       export_method: "ad-hoc",
       output_directory: "./build",
       output_name: "TestCiApp.ipa",
-      api_key: api_key,
       allow_provisioning_updates: true
     )
 

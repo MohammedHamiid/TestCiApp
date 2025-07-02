@@ -3,7 +3,7 @@ name: Build and Upload iOS App to TestApp.io
 on:
   push:
     branches:
-      - main  # or your deployment branch
+      - main # أو أي فرع انت بتستخدمه للنشر
 
 jobs:
   build:
@@ -32,13 +32,14 @@ jobs:
           bundle _2.6.9_ config set --local path 'vendor/bundle'
           bundle _2.6.9_ install --jobs 4 --retry 3
 
-      - name: Configure Git credentials for Match
+      - name: Configure Git credentials for match
         run: git config --global url."https://${{ secrets.MATCH_GIT_PRIVATE_TOKEN }}@github.com/".insteadOf "https://github.com/"
 
       - name: Run Fastlane lane (beta)
         env:
           TESTAPPIO_API_TOKEN: ${{ secrets.TESTAPPIO_API_TOKEN }}
           MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_PRIVATE_TOKEN: ${{ secrets.MATCH_GIT_PRIVATE_TOKEN }}
           FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
         run: bundle _2.6.9_ exec fastlane ios beta
-

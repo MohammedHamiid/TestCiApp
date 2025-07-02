@@ -6,7 +6,7 @@ platform :ios do
   match(
   type: "appstore",
   git_url: ENV["MATCH_GIT_URL"],
-  git_branch: "master",
+  git_branch: "main",
   git_basic_authorization: ENV["MATCH_GIT_PRIVATE_TOKEN"]
 )
 

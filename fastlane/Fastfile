@@ -23,8 +23,7 @@ platform :ios do
       scheme: "TestCiApp",
       export_method: "ad-hoc",
       output_directory: "./build",
-      output_name: "TestCiApp.ipa",
-      allow_provisioning_updates: true
+      output_name: "TestCiApp.ipa"
     )
 
     upload_to_testappio(

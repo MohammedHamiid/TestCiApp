@@ -21,7 +21,7 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 [bundle exec] fastlane ios beta
 ```
 
-Build and upload to TestApp.io
+Build and upload app to TestApp.io
 
 ----
 

@@ -4,22 +4,17 @@ platform :ios do
   desc "Build and upload app to TestApp.io"
   lane :beta do
 
-    # تحميل الشهادات من Match (GitHub Actions بدون تدخل يدوي)
-    match(
-      type: "adhoc",
-      username: ENV["FASTLANE_USER"],
-      git_url: "https://github.com/MohammedHamiid/ios-certificates.git",
-      git_branch: "master",
-      git_basic_authorization: "Basic TW9oYW1tZWRIYW1paWQ6Z2l0aHViX3BhdF8xMUFPSDRDSVkwSXNWdDBBZFV6aUZIX1hyODc0ZW1mZXo0SW5LSTlQd3NzV3dMamthNTBCcDEwcVBwMmZVRXBaMmgzMkdXR09ZQmtjaVFEUm9S"
-    )
-
+    # بناء التطبيق (من غير توقيع يدوي - تأكد إن المشروع مهيأ للتوقيع التلقائي)
     build_app(
-      scheme: "TestCiApp"
+      scheme: "TestCiApp",
+      export_method: "ad-hoc" # أو "development" لو بتجرب بس
     )
 
+    # رفع التطبيق على TestApp.io
     upload_to_testappio(
       api_token: ENV["TESTAPPIO_API_TOKEN"],
       app_id: "9QorGVmE7M"
     )
   end
 end
+

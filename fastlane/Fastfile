@@ -15,7 +15,8 @@ platform :ios do
       readonly: true,
       app_identifier: "com.benhamid.TestCiApp",
       api_key: api_key,
-      git_url: "https://x-access-token:${ENV['MATCH_GIT_PRIVATE_TOKEN']}@github.com/MohammedHamiid/ios-certificates.git"
+      git_url: "https://x-access-token:#{ENV['MATCH_GIT_PRIVATE_TOKEN']}@github.com/MohammedHamiid/ios-certificates.git"
+
     )
 
     build_app(

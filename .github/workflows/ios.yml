@@ -1,38 +1,33 @@
-name: Build and Upload to TestApp.io
+
+name: iOS CI & Upload to TestApp.io
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]  # Change if needed
 
 jobs:
-  build-and-upload:
+  build:
     runs-on: macos-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout Code
+      uses: actions/checkout@v4
 
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.2'
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.1
 
-      - name: Install Bundler
-        run: gem install bundler
+    - name: Install Bundler
+      run: gem install bundler
 
-      - name: Install dependencies
-        run: bundle install
+    - name: Install Fastlane
+      run: gem install fastlane
 
-      - name: Run Fastlane
-        env:
-          MATCH_GIT_AUTH_REPO: ${{ secrets.MATCH_GIT_AUTH_REPO }}
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          TESTAPPIO_API_TOKEN: ${{ secrets.TESTAPPIO_API_TOKEN }}
-          TESTAPPIO_APP_ID: ${{ secrets.TESTAPPIO_APP_ID }}
-          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
-          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
-          FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
-          APP_SCHEME: ${{ secrets.APP_SCHEME }}
-        run: bundle exec fastlane ios beta
+    - name: Install dependencies (optional)
+      run: bundle install || true
 
+    - name: Build & Upload with Fastlane
+      env:
+        TESTAPP_API_KEY: ${{ secrets.TESTAPPIO_API_TOKEN }}
+      run: fastlane beta

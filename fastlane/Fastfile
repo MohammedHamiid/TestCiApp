@@ -3,21 +3,26 @@ default_platform(:ios)
 platform :ios do
   desc "Build and upload to TestApp.io"
   lane :beta do
-    # Ensure the FASTLANE_SESSION is passed from secrets (GitHub Actions)
-    ENV["FASTLANE_SESSION"] = ENV["FASTLANE_SESSION"]
+    app_store_connect_api_key(
+      key_id: ENV["APP_STORE_KEY_ID"],
+      issuer_id: ENV["APP_STORE_ISSUER_ID"],
+      key_content: ENV["APP_STORE_CONNECT_API_KEY_CONTENT"],
+      duration: 1200,
+      in_house: false
+    )
 
     build_app(
-      scheme: "TestCiApp",                   # ← عدّل حسب اسم الـ Scheme بتاعك
+      scheme: "TestCiApp",
       export_method: "development",
       export_options: {
         signingStyle: "automatic"
       },
-      xcargs: "-allowProvisioningUpdates"    # ← عشان يسمح بإنشاء profile تلقائي
+      xcargs: "-allowProvisioningUpdates"
     )
 
     upload_to_testappio(
-      token: "0db11f3c-d0d7-4b1c-8c76-8197063b74a5", # ← توكن TestApp.io بتاعك
-      release_notes: "Beta build from GitHub Actions 🚀"
+      token: "0db11f3c-d0d7-4b1c-8c76-8197063b74a5",
+      release_notes: "Uploaded from GitHub Actions"
     )
   end
 end

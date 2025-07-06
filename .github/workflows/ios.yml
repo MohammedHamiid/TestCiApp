@@ -1,16 +1,16 @@
-name: iOS Beta Build
+name: iOS Beta Upload
 
 on:
   push:
     branches:
-      - main  # or your branch name
+      - main
 
 jobs:
   build:
     runs-on: macos-14
 
     steps:
-    - name: Checkout repository
+    - name: Checkout
       uses: actions/checkout@v4
 
     - name: Set up Ruby
@@ -18,18 +18,10 @@ jobs:
       with:
         ruby-version: 3.1
 
-    - name: Install Bundler
-      run: gem install bundler
-
     - name: Install Fastlane
       run: gem install fastlane
 
-    - name: Decode AuthKey.p8
-      run: echo "${{ secrets.APPSTORE_API_KEY }}" | base64 --decode > AuthKey.p8
-
-    - name: Build and upload to TestApp.io
+    - name: Build and Upload to TestApp.io
       env:
         TESTAPPIO_API_TOKEN: ${{ secrets.TESTAPPIO_API_TOKEN }}
-        APP_SCHEME: TestCiApp
       run: fastlane beta
-

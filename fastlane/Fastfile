@@ -3,15 +3,13 @@ default_platform(:ios)
 platform :ios do
   desc "Build and upload to TestApp.io"
   lane :beta do
-build_app(
-  scheme: "TestCiApp",
-  export_method: "development",
-  export_options: {
-    provisioningProfiles: {
-      "com.benhamid.TestCiApp" => "iOS Team Provisioning Profile: com.benhamid.TestCiApp"
-    }
-  }
-)
+    build_app(
+      scheme: "TestCiApp",
+      export_method: "development",
+      export_options: {
+        signingStyle: "automatic"
+      }
+    )
 
     upload_to_testappio(
       api_token: ENV["TESTAPPIO_API_TOKEN"]

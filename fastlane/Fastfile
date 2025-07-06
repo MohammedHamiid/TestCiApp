@@ -9,7 +9,17 @@ platform :ios do
       key_filepath: "AuthKey.p8" # نفس الاسم اللي فككناه في السكربت
     )
 
-    build_app(scheme: ENV["APP_SCHEME"])
+build_app(
+  scheme: ENV["APP_SCHEME"],
+  export_method: "development",
+  export_options: {
+    provisioningProfiles: {
+      "com.benhamid.TestCiApp" => "match Development com.benhamid.TestCiApp"
+    }
+  },
+  xcargs: "-allowProvisioningUpdates"
+)
+
 
     upload_to_testappio(
       api_token: ENV["TESTAPPIO_API_TOKEN"],

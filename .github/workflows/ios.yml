@@ -1,4 +1,4 @@
-name: iOS Build & Upload to TestApp.io
+name: iOS CI/CD – Upload to TestApp.io
 
 on:
   push:
@@ -18,13 +18,13 @@ jobs:
       with:
         ruby-version: 3.1
 
-    - name: Install dependencies
+    - name: Install Fastlane
       run: |
         gem install bundler
         bundle init || true
         bundle add fastlane fastlane-plugin-testappio || true
 
-    - name: Run Fastlane
+    - name: Build & Upload to TestApp.io
       env:
         FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
         FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}

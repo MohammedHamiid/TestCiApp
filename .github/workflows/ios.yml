@@ -1,4 +1,4 @@
-name: iOS CI/CD – Upload to TestApp.io
+name: Build and Upload to TestApp.io
 
 on:
   push:
@@ -6,33 +6,33 @@ on:
       - main
 
 jobs:
-  build:
-    runs-on: macos-14
+  build-and-upload:
+    runs-on: macos-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 3.1
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
 
-    - name: Install Fastlane
-      run: |
-        gem install bundler
-        bundle init || true
-        bundle add fastlane fastlane-plugin-testappio || true
+      - name: Install Bundler
+        run: gem install bundler
 
-    - name: Build & Upload to TestApp.io
-      env:
-        FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
-        FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
-        FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
-        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-        MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
-        MATCH_GIT_PRIVATE_TOKEN: ${{ secrets.MATCH_GIT_PRIVATE_TOKEN }}
-        TESTAPPIO_API_TOKEN: ${{ secrets.TESTAPPIO_API_TOKEN }}
-        TESTAPPIO_APP_ID: ${{ secrets.TESTAPPIO_APP_ID }}
-        APP_SCHEME: ${{ secrets.APP_SCHEME }}
-      run: bundle exec fastlane ios beta
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Run Fastlane
+        env:
+          MATCH_GIT_AUTH_REPO: ${{ secrets.MATCH_GIT_AUTH_REPO }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          TESTAPPIO_API_TOKEN: ${{ secrets.TESTAPPIO_API_TOKEN }}
+          TESTAPPIO_APP_ID: ${{ secrets.TESTAPPIO_APP_ID }}
+          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
+          FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
+          APP_SCHEME: ${{ secrets.APP_SCHEME }}
+        run: bundle exec fastlane ios beta
+

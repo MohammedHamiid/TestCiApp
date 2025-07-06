@@ -1,18 +1,21 @@
+default_platform(:ios)
+
 platform :ios do
   desc "Build and upload to TestApp.io"
   lane :beta do
     match(
       type: "development",
       app_identifier: "com.benhamid.TestCiApp",
-      git_url: ENV["MATCH_GIT_URL"],
+      git_url: ENV["MATCH_GIT_AUTH_REPO"],
       readonly: true,
       shallow_clone: true,
       clone_branch_directly: true
     )
 
     build_app(
-      scheme: ENV["APP_SCHEME"],
-      export_method: "development"
+      scheme: ENV["APP_SCHEME"] || "TestCiApp",
+      export_method: "development",
+      clean: true
     )
 
     upload_to_testappio(

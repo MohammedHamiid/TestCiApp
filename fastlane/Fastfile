@@ -3,6 +3,7 @@ default_platform(:ios)
 platform :ios do
   desc "Build and upload to TestApp.io"
   lane :beta do
+    # المصادقة باستخدام App Store Connect API Key
     app_store_connect_api_key(
       key_id: ENV["APP_STORE_KEY_ID"],
       issuer_id: ENV["APP_STORE_ISSUER_ID"],
@@ -11,8 +12,9 @@ platform :ios do
       in_house: false
     )
 
+    # بناء التطبيق
     build_app(
-      scheme: "TestCiApp",
+      scheme: ENV["APP_SCHEME"],
       export_method: "development",
       export_options: {
         signingStyle: "automatic"
@@ -20,10 +22,10 @@ platform :ios do
       xcargs: "-allowProvisioningUpdates"
     )
 
+    # رفع التطبيق إلى TestApp.io
     upload_to_testappio(
-      token: "0db11f3c-d0d7-4b1c-8c76-8197063b74a5",
-      release_notes: "Uploaded from GitHub Actions"
+      api_token: ENV["TESTAPPIO_API_TOKEN"],
+      app_id: ENV["TESTAPPIO_APP_ID"]
     )
   end
 end
-

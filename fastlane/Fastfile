@@ -2,22 +2,24 @@ platform :ios do
   desc "Build and upload to TestApp.io"
   lane :beta do
     gym(
-      scheme: "TestCiApp",                    # ✅ Replace with your scheme
+      scheme: "TestCiApp",                    # ✅ Your scheme
       export_method: "ad-hoc",
       clean: true,
       export_options: {
+        signingStyle: "automatic",
+        compileBitcode: false,
+        method: "ad-hoc",
         provisioningProfiles: {
           "com.benhamid.TestCiApp" => "match AdHoc com.benhamid.TestCiApp"
-        },
-        signingStyle: "automatic"
+        }
       },
-      allowProvisioningUpdates: true          # ✅ Enable this flag
+      xcargs: "-allowProvisioningUpdates"
     )
 
     ipa_path = Actions.lane_context[SharedValues::IPA_OUTPUT_PATH]
 
     sh "curl -X POST https://upload.testapp.io \
-        -H 'Authorization: Bearer #{ENV['TESTAPPIO_API_TOKEN']}' \
+        -H 'Authorization: Bearer #{ENV['TESTAPP_API_KEY']}' \
         -F 'file=@#{ipa_path}' \
         -F 'release_notes=Uploaded from GitHub Actions CI'"
   end

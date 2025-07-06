@@ -1,10 +1,12 @@
+default_platform(:ios)
+
 platform :ios do
   desc "Build and upload to TestApp.io"
   lane :beta do
     build_app(
-      scheme: "TestCiApp",
+      scheme: "TestCiApp",                   # ✅ Use your scheme name here
       export_method: "development",
-      xcargs: "-allowProvisioningUpdates" # <== ✅ Enables automatic profile generation
+      xcargs: "-allowProvisioningUpdates"    # ✅ Enables automatic signing
     )
 
     upload_to_testappio(

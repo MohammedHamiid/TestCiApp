@@ -1,16 +1,16 @@
-name: iOS Beta Upload
+name: iOS Build & Upload to TestApp.io
 
 on:
   push:
     branches:
-      - main
+      - main  # or your desired branch
 
 jobs:
   build:
     runs-on: macos-14
 
     steps:
-    - name: Checkout
+    - name: Checkout code
       uses: actions/checkout@v4
 
     - name: Set up Ruby
@@ -18,10 +18,12 @@ jobs:
       with:
         ruby-version: 3.1
 
-    - name: Install Fastlane
-      run: gem install fastlane
+    - name: Install dependencies
+      run: |
+        gem install bundler
+        bundle install
 
-    - name: Build and Upload to TestApp.io
+    - name: Run Fastlane
       env:
         TESTAPPIO_API_TOKEN: ${{ secrets.TESTAPPIO_API_TOKEN }}
-      run: fastlane beta
+      run: bundle exec fastlane ios beta

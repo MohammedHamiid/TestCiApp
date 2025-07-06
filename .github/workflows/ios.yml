@@ -30,4 +30,4 @@ jobs:
     - name: Build & Upload with Fastlane
       env:
         TESTAPP_API_KEY: ${{ secrets.TESTAPPIO_API_TOKEN }}
-      run: fastlane beta
+      run: bundle exec fastlane ios beta

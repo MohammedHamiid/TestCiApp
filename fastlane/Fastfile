@@ -5,7 +5,9 @@ platform :ios do
       type: "development",
       app_identifier: "com.benhamid.TestCiApp",
       git_url: ENV["MATCH_GIT_URL"],
-      readonly: true
+      readonly: true,
+      shallow_clone: true,
+      clone_branch_directly: true
     )
 
     build_app(
@@ -19,5 +21,3 @@ platform :ios do
     )
   end
 end
-
-

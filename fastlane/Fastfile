@@ -3,14 +3,22 @@ default_platform(:ios)
 platform :ios do
   desc "Build and upload to TestApp.io"
   lane :beta do
+    match(
+      type: "development",
+      git_url: ENV["MATCH_GIT_URL"],
+      git_basic_authorization: "Bearer #{ENV["MATCH_GIT_PRIVATE_TOKEN"]}",
+      readonly: true,
+      app_identifier: "com.benhamid.TestCiApp"
+    )
+
     build_app(
-      scheme: "TestCiApp",                   # ✅ Use your scheme name here
-      export_method: "development",
-      xcargs: "-allowProvisioningUpdates"    # ✅ Enables automatic signing
+      scheme: ENV["APP_SCHEME"],
+      export_method: "development"
     )
 
     upload_to_testappio(
-      api_token: ENV["TESTAPPIO_API_TOKEN"]
+      api_token: ENV["TESTAPPIO_API_TOKEN"],
+      app_id: ENV["TESTAPPIO_APP_ID"]
     )
   end
 end

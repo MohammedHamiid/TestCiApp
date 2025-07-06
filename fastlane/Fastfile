@@ -3,24 +3,40 @@ default_platform(:ios)
 platform :ios do
   desc "Build and upload to TestApp.io"
   lane :beta do
+    UI.important("🚀 Starting Fastlane lane: beta")
+
+    # Debugging ENV
+    UI.message("📦 APP_SCHEME: #{ENV['APP_SCHEME']}")
+    UI.message("🔐 MATCH_PASSWORD is set: #{ENV['MATCH_PASSWORD'] ? '✅' : '❌'}")
+    UI.message("🔐 MATCH_GIT_AUTH_REPO: #{ENV['MATCH_GIT_AUTH_REPO']}")
+    UI.message("🧪 TESTAPPIO_APP_ID: #{ENV['TESTAPPIO_APP_ID']}")
+    UI.message("🧪 TESTAPPIO_API_TOKEN is set: #{ENV['TESTAPPIO_API_TOKEN'] ? '✅' : '❌'}")
+
     match(
       type: "development",
       app_identifier: "com.benhamid.TestCiApp",
       git_url: ENV["MATCH_GIT_AUTH_REPO"],
-      readonly: true,
-      shallow_clone: true,
-      clone_branch_directly: true
+      shallow_clone: false, # safer for GitHub Actions
+      readonly: false,
+      verbose: true
     )
 
     build_app(
-      scheme: ENV["APP_SCHEME"] || "TestCiApp",
+      scheme: ENV["APP_SCHEME"],
       export_method: "development",
       clean: true
     )
 
+    ipa_path = lane_context[SharedValues::IPA_OUTPUT_PATH]
+    UI.message("📤 IPA path: #{ipa_path}")
+
     upload_to_testappio(
       api_token: ENV["TESTAPPIO_API_TOKEN"],
-      app_id: ENV["TESTAPPIO_APP_ID"]
+      app_id: ENV["TESTAPPIO_APP_ID"],
+      file: ipa_path,
+      release_notes: "Uploaded via GitHub Actions 🚀"
     )
+
+    UI.success("✅ Successfully uploaded to TestApp.io!")
   end
 end

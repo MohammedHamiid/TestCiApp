@@ -1,37 +1,35 @@
-name: Build and Upload to TestApp.io
+name: iOS Beta Build
 
 on:
   push:
     branches:
-      - main
+      - main  # or your branch name
 
 jobs:
   build:
     runs-on: macos-14
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.1
 
-      - name: Install dependencies
-        run: |
-          gem install bundler
-          bundle install
+    - name: Install Bundler
+      run: gem install bundler
 
-      - name: Decode App Store Connect API Key
-        run: |
-          echo "${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}" | base64 --decode > AuthKey.p8
+    - name: Install Fastlane
+      run: gem install fastlane
 
-      - name: Run Fastlane beta
-        env:
-          TESTAPPIO_API_TOKEN: ${{ secrets.TESTAPPIO_API_TOKEN }}
-          TESTAPPIO_APP_ID: ${{ secrets.TESTAPPIO_APP_ID }}
-          APP_STORE_KEY_ID: ${{ secrets.APP_STORE_KEY_ID }}
-          APP_STORE_ISSUER_ID: ${{ secrets.APP_STORE_ISSUER_ID }}
-        run: bundle exec fastlane beta
+    - name: Decode AuthKey.p8
+      run: echo "${{ secrets.APPSTORE_API_KEY }}" | base64 --decode > AuthKey.p8
+
+    - name: Build and upload to TestApp.io
+      env:
+        TESTAPPIO_API_TOKEN: ${{ secrets.TESTAPPIO_API_TOKEN }}
+        APP_SCHEME: TestCiApp
+      run: fastlane beta
 

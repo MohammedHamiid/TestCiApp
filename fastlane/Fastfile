@@ -1,5 +1,3 @@
-default_platform(:ios)
-
 platform :ios do
   desc "Build and upload to TestApp.io"
   lane :beta do
@@ -7,7 +5,6 @@ platform :ios do
       type: "development",
       app_identifier: "com.benhamid.TestCiApp",
       git_url: ENV["MATCH_GIT_URL"],
-      git_basic_authorization: "token #{ENV["MATCH_GIT_PRIVATE_TOKEN"]}",
       readonly: true
     )
 
@@ -22,4 +19,5 @@ platform :ios do
     )
   end
 end
+
 
